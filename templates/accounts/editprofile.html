@@ -1,0 +1,65 @@
+{% extends "base/base.html" %}
+{% load subfilter %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+<section class="h-100 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center">
+      <div class="col col-lg-9 col-xl-8">
+        <div class="card">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+              {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}"
+                alt="avatar" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1">
+                {% else %}
+                <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                alt="avatar" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1">
+                {% endif %}
+                <div class="mt-2" style="z-index: 1;">
+                    <label for="avatar" class="form-label small text-body-secondary d-block" >Выберите аватарку:</label>
+                    <input type="file" id="avatar" name="avatar" value="{{profile.avatar}}" class="form-control-sm" accept="image/*">
+                </div>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1;">
+                Save
+              </button>
+            </div>
+            <div class="ms-3" style="margin-top: 130px;">
+              <h5><input name="username" value="{{profile.username}}" class="form-control"></h5>
+              <p>New York</p>
+            </div>
+          </div>
+          <div class="p-4 text-black bg-body-tertiary">
+            <div class="d-flex justify-content-end text-center py-1 text-body">
+              <div>
+                <p class="mb-1 h5">253</p>
+                <p class="small text-muted mb-0">Photos</p>
+              </div>
+              <div class="px-3">
+                <p class="mb-1 h5">{{ profile.followers.count }}</p>
+                <p class="small text-muted mb-0">Followers</p>
+              </div>
+              <div>
+                <p class="mb-1 h5">{{ profile.follows.count }}</p>
+                <p class="small text-muted mb-0">Following</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-4 text-black">
+            <div class="mb-5  text-body">
+              <p class="lead fw-normal mb-1">About</p>
+              <div class="p-4 bg-body-tertiary">
+                <p><input name="bio" value="{{profile.bio}}" class="form-control"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</form>
+{% endblock %}
