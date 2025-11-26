@@ -1,11 +1,13 @@
 from django.db import models
 from accounts.models import Profile
 
-class Tag(models.Model):
-    name = models.CharField(max_length=50)
+from taggit.managers import TaggableManager
 
-    def __str__(self):
-        return self.name
+# class Tag(models.Model):
+#     name = models.CharField(max_length=50)
+#
+#     def __str__(self):
+#         return self.name
 
 class Post(models.Model):
     STATUS_CHOICES = (
@@ -20,7 +22,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-    tags = models.ManyToManyField(Tag, related_name='posts')
+    tags = TaggableManager()
 
     class Meta:
         ordering = ['-created_at']

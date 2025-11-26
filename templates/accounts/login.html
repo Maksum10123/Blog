@@ -1,18 +1,35 @@
 {% extends "base/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
-    <h2 class="mb-4 text-center">Login</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form|crispy }}
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-    <p class="mt-3 text-center">
-      Don't have an account? <a href="{% url 'register' %}">Register</a>
-    </p>
-  </div>
+
+<div class="login-container">
+    <div class="login-card">
+
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="login-title">Вход</h2>
+            <p class="login-subtitle">С возвращением! Пожалуйста, войдите.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form|crispy }}
+
+            <button type="submit" class="btn btn-login">
+                Войти в аккаунт
+            </button>
+        </form>
+
+        <div class="register-link">
+            Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+        </div>
+
+    </div>
 </div>
+
 {% endblock %}

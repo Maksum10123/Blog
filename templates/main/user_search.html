@@ -1,0 +1,49 @@
+{% extends "base/base.html" %}
+
+
+{% block content %}
+{% load static %}
+
+<div class="search-wrapper">
+
+    <form action="{% url 'user_search' %}" method="get" class="search-form-container">
+        <input type="text" name="q" class="search-input" placeholder="Введите никнейм..." value="{{ query|default:'' }}">
+        <button type="submit" class="search-btn">Найти</button>
+    </form>
+
+    {% if query %}
+        <h3 class="results-header">Результаты по запросу: "<strong>{{ query }}</strong>"</h3>
+
+        {% if result %}
+            <div class="results-grid">
+                {% for user in result %}
+                <a href="{% url 'profile' user.id %}" class="user-card">
+
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="avatar-img">
+                    {% else %}
+                        <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" alt="default avatar" class="avatar-img">
+                    {% endif %}
+
+                    <div class="user-name">
+                        {{ user.username }}
+                    </div>
+
+                    <div class="user-email">
+                        <p>{{ user.followers.count }} Followers</p>
+                    </div>
+
+                    <span class="view-profile-btn">Смотреть профиль</span>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results">
+                <h3>😕 Ничего не найдено</h3>
+                <p>Пользователи с таким ником не найдены.</p>
+            </div>
+        {% endif %}
+    {% endif %}
+
+</div>
+{% endblock %}

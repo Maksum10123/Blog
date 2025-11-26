@@ -1,9 +1,12 @@
+from idlelib.query import Query
+
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import PostForm, TagForm
+from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-
-from .models import Post, Like
+from taggit.models import Tag
+from django.db.models import Q
+from .models import Post, Like, Profile
 
 
 def home(request):
@@ -19,19 +22,31 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m()
             return redirect("home")
     return render(request, 'main/createpost.html', {'form': form})
 
-@staff_member_required
-def create_tag(request):
-    form = TagForm()
-    if request.method == "POST":
-        form = TagForm(request.POST)
-        if form.is_valid():
-            tag = form.save(commit=True)
-            tag.save()
-            return redirect("home")
-    return render(request, 'main/createtag.html', {'form': form})
+def search_by_tag(request):
+    query = request.GET.get("q")
+    result = []
+    all_tags = Tag.objects.all()
+    if query:
+        result = (
+            Post.objects.filter(tags__name__icontains=query).distinct().order_by('-created_at')
+        )
+
+    return render(request, 'main/search.html', {'result': result, 'query': query, 'all_tags': all_tags})
+
+@login_required
+def search_users(request):
+    query = request.GET.get("q")
+    result = []
+    if query:
+        result = (
+            Profile.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
+        )
+    context = {'result': result, 'query': query}
+    return render(request, 'main/user_search.html', context)
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)

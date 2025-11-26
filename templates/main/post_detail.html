@@ -1,31 +1,88 @@
 {% extends "base/base.html" %}
+{% load static %}
+
 {% block content %}
+
 <div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
 
-  <div class="card">
-    {% if post.image %}
-      <img src="{{ post.image.url }}" class="card-img-top" alt="post image">
-    {% endif %}
-    <div class="card-body">
-      <h4 class="card-title">@{{ post.author.username }}</h4>
-      <p class="card-text">{{ post.description }}</p>
-        <form action="{% url 'toggle_like' post.id %}" method="post">
-            {% csrf_token %}
-            {% if user_liked %}
-                <button type="submit" class="btn btn-danger">
-                    <i class="fa-solid fa-heart"></i>
-                </button>
-            {% else %}
-                <button type="submit" class="btn btn-success">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
-            {% endif %}
-        </form>
+            <div class="mb-3">
+                <a href="javascript:history.back()" class="text-decoration-none text-secondary">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Назад
+                </a>
+            </div>
 
-        <p>Лайков: {{ post.likes.count }}</p>
-      <p class="text-muted small">Опубликовано: {{ post.created_at }}</p>
+            <div class="post-detail-card shadow-sm">
+
+                <div class="post-header">
+                    {% if post.author.avatar %}
+                        <img src="{{ post.author.avatar.url }}" class="author-avatar-small" alt="avatar">
+                    {% else %}
+                        <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" class="author-avatar-small" alt="avatar">
+                    {% endif %}
+
+                    <a href="{% url 'profile' post.author.id %}" class="author-link">{{ post.author.username }}</a>
+
+                    <div class="ms-auto text-muted" style="cursor: pointer;">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </div>
+                </div>
+
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="post-image-full" alt="post image">
+                {% endif %}
+
+                <div class="post-actions">
+                    <form action="{% url 'toggle_like' post.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-like-reset">
+                            {% if user_liked %}
+                                <i class="fa-solid fa-heart heart-filled"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart heart-outline"></i>
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <i class="fa-regular fa-comment icon-hover" style="cursor: pointer;"></i>
+                    <i class="fa-regular fa-paper-plane icon-hover" style="cursor: pointer;"></i>
+
+                    <i class="fa-regular fa-bookmark ms-auto icon-hover" style="cursor: pointer;"></i>
+                </div>
+
+                <div class="post-info">
+
+                    <span class="likes-count">
+                        Нравится: {{ post.likes.count }}
+                    </span>
+
+                    <div class="post-description">
+                        <a href="{% url 'profile' post.author.id %}" class="author-link me-1">{{ post.author.username }}</a>
+                        {{ post.description|linebreaksbr }}
+                    </div>
+
+                    {% if post.tags.all %}
+                    <div class="post-tags">
+                        {% for tag in post.tags.all %}
+                        <a href="{% url 'search' %}?q={{ tag.name }}">#{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <span class="post-date">{{ post.created_at }}</span>
+                </div>
+
+                <div class="comment-section-fake">
+                    <i class="fa-regular fa-face-smile me-3 fa-lg text-secondary"></i>
+                    <input type="text" class="comment-input" placeholder="Добавьте комментарий...">
+                    <button class="comment-btn">Опубликовать</button>
+                </div>
+
+            </div>
+
+        </div>
     </div>
-  </div>
-
 </div>
+
 {% endblock %}

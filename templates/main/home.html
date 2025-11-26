@@ -2,25 +2,71 @@
 
 
 {% block content %}
+{% load static %}
 <div class="row justify-content-center">
-    <div class="col-7">
-{% for post in posts %}
-<div class="card mb-3">
-    {% if post.image %}
-        <img src="{{ post.image.url }}" class="card-img-top" alt="Wild Landscape">
-    {% endif %}
-  <div class="card-body">
-    <h5 class="card-title">{{ post.author }}</h5>
-    <p class="card-text">{{ post.description }}</p>
-    <p class="card-text">
-      <small class="text-muted">{{ post.created_at }}</small>
-    </p>
-  </div>
-</div>
-{% empty %}
-        <p>Постов нету</p>
-{% endfor %}
-        <p>Посты закончились</p>
-</div>
+    <div class="col-12 col-md-8 col-lg-6">
+
+        {% for post in posts %}
+        <div class="card social-card">
+
+            <div class="card-header-custom">
+                {% if post.author.avatar %}
+                    <img src="{{ post.author.avatar.url }}" class="author-avatar" alt="Avatar">
+                {% else %}
+                    <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" class="author-avatar" alt="Default Avatar">
+                {% endif %}
+
+                <div>
+                    <a href="#" class="author-name">{{ post.author }}</a>
+                </div>
+
+                <span class="post-date-top">
+                    {{ post.created_at|date:"d M H:i" }}
+                </span>
+            </div>
+
+            {% if post.image %}
+            <div class="post-image-container">
+                <img src="{{ post.image.url }}" class="post-img" alt="Post Image">
+            </div>
+            {% endif %}
+
+            <div class="card-body-custom">
+
+                <p class="post-description">
+                    {{ post.description|linebreaksbr }}
+                </p>
+
+                {% if post.tags.all %}
+                <div class="tags-container">
+                    {% for tag in post.tags.all %}
+                    <a href="#" class="post-tag">#{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="card-footer-custom">
+                    <i class="far fa-heart action-icon"></i>
+                    <i class="far fa-comment action-icon"></i>
+                    <i class="far fa-paper-plane action-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-camera empty-icon"></i>
+            <h3>Пока нет постов</h3>
+            <p>Будьте первыми, кто что-то опубликует!</p>
+        </div>
+        {% endfor %}
+
+        {% if posts %}
+        <div class="text-center text-muted mt-4 mb-5">
+            <small>— Вы посмотрели все посты —</small>
+        </div>
+        {% endif %}
+
     </div>
+</div>
 {% endblock %}

@@ -1,13 +1,54 @@
 {% extends "base/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <h2 class="mb-4 text-center">создать пост</h2>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form|crispy }}
-      <button type="submit" class="btn btn-primary w-100">Опубликовать</button>
-    </form>
-  </div>
+
+<div class="row justify-content-center form-container">
+    <div class="col-12">
+
+        <div class="custom-card">
+            <h2 class="form-title">
+                <i class="fa-solid fa-pen-nib"></i>Создать пост
+            </h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {{ form|crispy }}
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-submit-custom">
+                        <i class="fa-solid fa-paper-plane me-2"></i>Опубликовать
+                    </button>
+
+                    <a href="/" class="btn btn-link text-secondary text-decoration-none text-center mt-2">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
 </div>
-{% endblock%}
+
+<script>
+  // Находим поле тегов
+  var input = document.querySelector('input[name=tags]');
+
+  // Инициализируем Tagify
+  if (input) {
+      new Tagify(input, {
+          originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+          maxTags: 10,
+          dropdown: {
+            maxItems: 20,           // Максимум элементов в списке
+            classname: "tags-look", // Класс для стилизации
+            enabled: 0,             // Всегда показывать подсказки при вводе
+            closeOnSelect: false    // Не закрывать список после выбора
+          }
+      });
+  }
+</script>
+
+{% endblock %}

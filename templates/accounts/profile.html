@@ -1,124 +1,164 @@
 {% extends "base/base.html" %}
 {% load subfilter %}
-{% block content %}
-<section class="h-100 gradient-custom-2">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center">
-      <div class="col col-lg-9 col-xl-8">
-        <div class="card">
-          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
-            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px; position: relative; z-index: 2">
-              {% if profile.avatar %}
-                <img src="{{ profile.avatar.url }}"
-                alt="avatar" class="img-fluid img-thumbnail mt-4 mb-2"
-                style="width: 150px; z-index: 1">
-                {% else %}
-                <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
-                alt="avatar" class="img-fluid img-thumbnail mt-4 mb-2"
-                style="width: 150px; z-index: 1">
-                {% endif %}
-                {% if user == profile %}
-              <a href="{% url 'editprofile' user.id %}" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-warning text-body" data-mdb-ripple-color="warning" style="z-index: 1;">
-                Edit profile
-              </a>
-                {% else %}
-                  <a href="{% url 'subscription' profile.id %}" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger text-body" data-mdb-ripple-color="danger" style="z-index: 1;">
-                      {% if request.user|follow_to:profile %}Unsubscribe{% else %}Subscribe{% endif %}
-                  </a>
-                    {% if request.user.is_superuser and not profile.is_staff %}
-                    <div class="mt-3">
-                        <form action="{% url 'staff' profile.id %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-warning text-body" data-mdb-ripple-color="warning" style="z-index: 1;">Make staff</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                {% endif %}
+{% load static %}
 
-            </div>
-            <div class="ms-3" style="margin-top: 130px;">
-              <h5>{{ profile.username }}</h5>
-              <p>New York</p>
-            </div>
-          </div>
-          <div class="p-4 text-black bg-body-tertiary">
-            <div class="d-flex justify-content-end text-center py-1 text-body">
-              <div>
-                <p class="mb-1 h5">{{ profile }}</p>
-                <p class="small text-muted mb-0">Photos</p>
-              </div>
-              <div class="px-3">
-                <p class="mb-1 h5">{{ profile.followers.count }}</p>
-                <p class="small text-muted mb-0">Followers</p>
-              </div>
-              <div>
-                <p class="mb-1 h5">{{ profile.follows.count }}</p>
-                <p class="small text-muted mb-0">Following</p>
-              </div>
-            </div>
-          </div>
-          <div class="card-body p-4 text-black">
-            <div class="mb-5  text-body">
-              <p class="lead fw-normal mb-1">About</p>
-              <div class="p-4 bg-body-tertiary">
-                <p class="font-italic mb-1">{{ profile.bio }}</p>
-              </div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-4 text-body">
-              <p class="lead fw-normal mb-0">Последние посты</p>
-              <p class="mb-0"><a href="#!" class="text-muted">Show all</a></p>
-            </div>
-                <div class="row g-3">
-                    {% if request.user == profile %}
-                    {% for post in profile.author.all %}
-                    <div class="col-md-6 col-lg-4">
-                        <a href="{% url 'post_detail' post.id %}" style="text-decoration: none; color: inherit">
-                        <div class="card shadow-sm h-100 border-0">
-                            {% if post.image %}
-                                <img src="{{ post.image.url }}" class="card-img-top rounded-top" alt="Изображение поста">
+{% block content %}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="profile-card">
+                <div class="profile-cover"></div>
+
+                <div class="profile-header-content">
+                    <div class="d-flex justify-content-between align-items-end flex-wrap">
+
+                        <div>
+                            {% if profile.avatar %}
+                                <img src="{{ profile.avatar.url }}" alt="avatar" class="profile-avatar-img">
+                            {% else %}
+                                <img src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" alt="avatar" class="profile-avatar-img">
                             {% endif %}
-                            <div class="card-body">
-                                <p class="card-text">{{ post.description }}</p>
-                            </div>
-                            <div class="card-footer bg-transparent border-0">
-                                <small class="text-muted">Опубликовано: {{ post.created_at }}</small>
-                            {% if post.status == 'draft' %}
-                                <small>Черновик</small>
+
+                            <h1 class="profile-username">{{ profile.username }}</h1>
+                            {% if profile.get_full_name %}
+                                <p class="text-muted mb-0">{{ profile.get_full_name }}</p>
                             {% endif %}
-                            </div>
                         </div>
-                        </a>
-                    </div>
-                    {% empty %}
-                        <p class="text-center text-muted">Пока нет постов.</p>
-                    {% endfor %}
-                    {% else %}
-                        {% for post in posts %}
-                        <div class="col-md-6 col-lg-4">
-                            <a href="{% url 'post_detail' post.id %}" style="text-decoration: none; color: inherit">
-                            <div class="card shadow-sm h-100 border-0">
-                                {% if post.image %}
-                                    <img src="{{ post.image.url }}" class="card-img-top rounded-top" alt="Изображение поста">
+
+                        <div class="mb-3 mt-3">
+                            {% if user == profile %}
+                                <a href="{% url 'editprofile' user.id %}" class="btn btn-light border btn-action">
+                                    <i class="fa-solid fa-pen me-2"></i>Редактировать
+                                </a>
+                            {% else %}
+                                <a href="{% url 'subscription' profile.id %}"
+                                   class="btn {% if request.user|follow_to:profile %}btn-outline-danger{% else %}btn-primary{% endif %} btn-action me-2">
+                                    {% if request.user|follow_to:profile %}
+                                        <i class="fa-solid fa-user-minus me-2"></i>Отписаться
+                                    {% else %}
+                                        <i class="fa-solid fa-user-plus me-2"></i>Подписаться
+                                    {% endif %}
+                                </a>
+
+                                {% if request.user.is_superuser and not profile.is_staff %}
+                                    <form action="{% url 'staff' profile.id %}" method="POST" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-warning btn-action">
+                                            <i class="fa-solid fa-shield-halved me-1"></i> Staff
+                                        </button>
+                                    </form>
                                 {% endif %}
-                                <div class="card-body">
-                                    <p class="card-text">{{ post.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        {% if profile.bio %}
+                            <p class="profile-bio">{{ profile.bio }}</p>
+                        {% else %}
+                            <p class="text-muted fst-italic">О себе не заполнено.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="stats-box">
+                        <div>
+                            <span class="stat-number">
+                                {% if user == profile %}
+                                    {{ profile.author.count }}
+                                {% else %}
+                                    {{ posts.count }}
+                                {% endif %}
+                            </span>
+                            <span class="stat-label">Посты</span>
+                        </div>
+                        <div>
+                            <span class="stat-number">{{ profile.followers.count }}</span>
+                            <span class="stat-label">Подписчики</span>
+                        </div>
+                        <div>
+                            <span class="stat-number">{{ profile.follows.count }}</span>
+                            <span class="stat-label">Подписки</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+                <h4 class="mb-0 fw-bold text-secondary"><i class="fa-solid fa-grid-2 me-2"></i>Публикации</h4>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 pb-5">
+
+                {% if request.user == profile %}
+
+                    {% for post in profile.author.all %}
+                        <div class="col">
+                            <a href="{% url 'post_detail' post.id %}" class="text-decoration-none text-dark">
+                                <div class="card post-grid-card">
+                                    <div class="position-relative">
+                                        {% if post.image %}
+                                            <img src="{{ post.image.url }}" class="post-grid-img" alt="Post">
+                                        {% else %}
+                                            <div class="post-grid-img d-flex align-items-center justify-content-center bg-light text-muted">
+                                                <i class="fa-solid fa-image fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if post.status == 'draft' %}
+                                            <span class="draft-badge">Черновик</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text text-truncate">{{ post.description|default:"..." }}</p>
+                                        <small class="text-muted"><i class="fa-regular fa-clock me-1"></i>{{ post.created_at|date:"d M Y" }}</small>
+                                    </div>
                                 </div>
-                                <div class="card-footer bg-transparent border-0">
-                                    <small class="text-muted">Опубликовано: {{ post.created_at }}</small>
-                                </div>
-                            </div>
                             </a>
                         </div>
+                    {% empty %}
+                        <div class="col-12 text-center py-5">
+                            <p class="text-muted">У вас пока нет публикаций.</p>
+                            <a href="{% url 'create_post' %}" class="btn btn-primary btn-sm rounded-pill">Создать пост</a>
+                        </div>
+                    {% endfor %}
 
-                        {% empty %}
-                            <p class="text-center text-muted">Пока нет постов.</p>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-          </div>
+                {% else %}
+
+                    {% for post in posts %}
+                        <div class="col">
+                            <a href="{% url 'post_detail' post.id %}" class="text-decoration-none text-dark">
+                                <div class="card post-grid-card">
+                                    <div class="position-relative">
+                                        {% if post.image %}
+                                            <img src="{{ post.image.url }}" class="post-grid-img" alt="Post">
+                                        {% else %}
+                                            <div class="post-grid-img d-flex align-items-center justify-content-center bg-light text-muted">
+                                                <i class="fa-solid fa-image fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text text-truncate">{{ post.description|default:"..." }}</p>
+                                        <small class="text-muted"><i class="fa-regular fa-clock me-1"></i>{{ post.created_at|date:"d M Y" }}</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center py-5">
+                            <i class="fa-solid fa-camera fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Нет доступных публикаций.</p>
+                        </div>
+                    {% endfor %}
+
+                {% endif %}
+
+            </div>
+
         </div>
-      </div>
     </div>
-  </div>
-</section>
+</div>
+
 {% endblock %}

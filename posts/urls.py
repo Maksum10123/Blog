@@ -8,7 +8,8 @@ urlpatterns = [
     path('create/', views.create_post, name="create_post"),
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     path('post/<int:post_id>/like/', views.toggle_like, name='toggle_like'),
-    path('create/tag', views.create_tag, name="create_tag"),
+    path('search', views.search_by_tag, name='search'),
+    path('accounts/search', views.search_users, name='user_search'),
 
 ]
 
