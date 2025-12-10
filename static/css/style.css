@@ -1202,3 +1202,85 @@ body{
         border-color: #6c5ce7;
         box-shadow: none;
     }
+
+    /* Убираем стандартные отступы crispy forms внутри футера комментариев */
+.comment-section-footer .form-group {
+    margin-bottom: 0 !important;
+}
+
+/* Делаем поле ввода более плоским и чистым */
+.comment-section-footer textarea,
+.comment-section-footer input[type="text"] {
+    background: transparent;
+    border: none;
+    resize: none; /* Если это textarea */
+    box-shadow: none;
+    height: auto;
+    padding: 0;
+    font-size: 14px;
+}
+
+.comment-section-footer textarea:focus,
+.comment-section-footer input[type="text"]:focus {
+    box-shadow: none;
+    border: none;
+    outline: none;
+}
+
+/* Стилизация скроллбара для списка комментариев (тонкий и серый) */
+.comments-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+.comments-list-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.comments-list-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+.comments-list-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+<style>
+    /* Стиль для скроллбара комментариев (тонкий и аккуратный) */
+    .comments-list-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    .comments-list-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .comments-list-container::-webkit-scrollbar-thumb {
+        background: #dbdbdb;
+        border-radius: 3px;
+    }
+
+    /* Стиль для поля ввода комментария */
+    /* Мы обращаемся к input или textarea внутри формы */
+    .comment-section-footer textarea,
+    .comment-section-footer input[type="text"] {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent;
+        width: 100%;
+        resize: none; /* Запрет растягивания textarea */
+        height: auto;
+        min-height: 18px;
+        max-height: 80px;
+        padding: 0;
+        font-size: 14px;
+        color: #262626;
+    }
+
+    /* Плейсхолдер */
+    .comment-section-footer textarea::placeholder {
+        color: #8e8e8e;
+    }
+
+    /* Анимация появления */
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }

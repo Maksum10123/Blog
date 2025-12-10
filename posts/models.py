@@ -43,3 +43,15 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user} liked post {self.post.id}"
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, related_name='comments', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    body = models.TextField()
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return f"{self.user} comment {self.post.id}"

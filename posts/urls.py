@@ -10,6 +10,7 @@ urlpatterns = [
     path('post/<int:post_id>/like/', views.toggle_like, name='toggle_like'),
     path('search', views.search_by_tag, name='search'),
     path('accounts/search', views.search_users, name='user_search'),
+    path('post/<int:post_id>/comment', views.publish_comment, name='comment'),
 
 ]
 
