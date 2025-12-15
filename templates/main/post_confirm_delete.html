@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <div style="border: 1px solid red; padding: 20px; text-align: center;">
+        <h2>Вы уверены?</h2>
+        <p>Вы собираетесь удалить пост: <strong>"{{ post.description|truncatechars:50 }}"</strong>.</p>
+        <p>Это действие нельзя отменить.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" style="background: red; color: white;">Да, удалить</button>
+            <a href="{% url 'post_detail' post.id %}">Отмена</a>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Редактирование поста</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            {% if field.name == 'tags' %}
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Теги (нельзя изменять)</label>
+                    <div style="padding: 10px; background: #f0f0f0; border-radius: 5px; color: #555;">
+                        {% for tag in post.tags.all %}
+                            #{{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            Нет тегов
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if post.image %}
+            <div style="margin: 20px 0;">
+                <p>Текущее изображение:</p>
+                <img src="{{ post.image.url }}" alt="Post image" style="max-width: 200px; border-radius: 8px;">
+            </div>
+        {% endif %}
+
+        <br>
+        <button type="submit">Сохранить изменения</button>
+        <a href="{% url 'post_detail' post.id %}">Отмена</a>
+    </form>
+</div>
+{% endblock %}

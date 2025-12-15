@@ -8,6 +8,9 @@ from taggit.models import Tag
 from django.db.models import Q
 from .models import Post, Like, Profile, Comment
 from django.http import HttpResponseRedirect
+from django.views.generic import UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
 
 
 def home(request):
@@ -95,3 +98,37 @@ def publish_comment(request, post_id):
             comment.save()
             form.save_m2m()
             return redirect('post_detail', post_id=post.id)
+
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.author != request.user:
+        return redirect('home')
+
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES, instance=post)
+        form.fields['tags'].disabled = True
+        if form.is_valid():
+            form.save()
+            return redirect("post_detail", post_id=post.id)
+    else:
+        form = PostForm(instance=post)
+        form.fields['tags'].disabled = True
+
+    return render(request, 'main/post_edit.html', {'form': form, 'post': post})
+
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.author != request.user:
+        return redirect('home')
+
+    if request.method == "POST":
+        post.delete()
+        return redirect('home')
+
+    return render(request, 'main/post_confirm_delete.html', {'post': post})

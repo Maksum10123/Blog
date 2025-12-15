@@ -25,8 +25,27 @@
 
                     <a href="{% url 'profile' post.author.id %}" class="author-link">{{ post.author.username }}</a>
 
-                    <div class="ms-auto text-muted" style="cursor: pointer;">
-                        <i class="fa-solid fa-ellipsis"></i>
+                    <div class="ms-auto dropdown">
+                        <span class="text-muted" style="cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </span>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if request.user == post.author %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'edit_post' post.id %}">
+                                        <i class="fa-solid fa-pen me-2"></i> Редактировать
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'delete_post' post.id %}">
+                                        <i class="fa-solid fa-trash me-2"></i> Удалить
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li><a class="dropdown-item disabled" href="#">Нет доступных действий</a></li>
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
 

@@ -11,7 +11,8 @@ urlpatterns = [
     path('search', views.search_by_tag, name='search'),
     path('accounts/search', views.search_users, name='user_search'),
     path('post/<int:post_id>/comment', views.publish_comment, name='comment'),
-
+    path('post/<int:post_id>/edit/', views.edit_post, name='edit_post'),
+    path('post/<int:post_id>/delete/', views.delete_post, name='delete_post'),
 ]
 
 
