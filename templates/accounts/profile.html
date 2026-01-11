@@ -60,6 +60,12 @@
                         {% else %}
                             <p class="text-muted fst-italic">О себе не заполнено.</p>
                         {% endif %}
+                        {% if profile.telegram_id %}
+                            <span>Поключено</span>
+                            <span>Telegram id: {{ profile.telegram_id }}</span>
+                        {% else %}
+                            <a href="{% url 'connecttelegram' %}">Привязать телеграм</a>
+                        {% endif %}
                     </div>
 
                     <div class="stats-box">

@@ -1,5 +1,6 @@
 from django import forms
 from .models import Post, Comment
+from taggit.forms import TagWidget
 
 
 class PostForm(forms.ModelForm):
@@ -8,8 +9,10 @@ class PostForm(forms.ModelForm):
         fields = ['image','description','status', 'tags']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3, 'cols': 20}),
-            'tags': forms.TextInput(attrs={'placeholder': 'Введите теги через Enter.'}),
+            'tags': TagWidget(attrs={'placeholder': 'Введите теги через Enter.'}),
         }
+
+
 
 class CommentForm(forms.ModelForm):
     class Meta:

@@ -14,6 +14,9 @@ urlpatterns = [
     path('subscription/<int:user_id>/', views.subscription, name='subscription'),
     path('profile/<int:user_id>/edit', views.edit_profile, name="editprofile"),
     path('promote/<int:user_id>', views.make_staff, name="staff"),
+#    path('settings/', views.settings, name="settings"),
+    path('settings/telegram/', views.start_telegram_auth, name="connecttelegram"),
+    path('connect-telegram/done/<str:token>/<str:chat_id>/', views.finish_telegram_auth, name="finishtelegram"),
 ]
 
 

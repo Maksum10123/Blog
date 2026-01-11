@@ -109,13 +109,11 @@ def edit_post(request, post_id):
 
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES, instance=post)
-        form.fields['tags'].disabled = True
         if form.is_valid():
             form.save()
             return redirect("post_detail", post_id=post.id)
     else:
         form = PostForm(instance=post)
-        form.fields['tags'].disabled = True
 
     return render(request, 'main/post_edit.html', {'form': form, 'post': post})
 

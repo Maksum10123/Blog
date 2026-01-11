@@ -1,3 +1,5 @@
+import telebot
+from django.contrib import messages
 from django.contrib.auth import login
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm
@@ -60,7 +62,23 @@ def edit_profile(request, user_id):
         return redirect("profile", user_id=user_id)
     return render(request, 'accounts/editprofile.html', {"profile": user})
 
+@login_required
+def start_telegram_auth(request):
+    token = request.user.generate_token()
+    bot_name = "AuthMebotblogbot"
+    link = f"https://t.me/{bot_name}?start={token}"
+    return redirect(link)
 
+def finish_telegram_auth(request, token, chat_id):
+    try:
+        profile = models.Profile.objects.get(tg_auth_token=token)
+        profile.telegram_id = chat_id
+        profile.tg_auth_token = ""
+        profile.save()
+        messages.success(request, "Телеграм успешно привязан")
+    except models.Profile.DoesNotExist:
+        messages.error(request, "Неверный токен")
+    return redirect("home")
 
 
 
